@@ -1,0 +1,28 @@
+{
+    "ownerId": "474231265059405845",
+    "log": false,
+    "devPrefix": "p!",
+    "para": {
+        "detectSecuritySec": 10,
+        "maxDelChannel": 10,
+        "maxJoinUser": 10,
+        "possibleCategories": [
+            "mods",
+            "ints",
+            "else",
+            "devs"
+        ],
+        "categoriesName": [
+            "Modération",
+            "Interactions",
+            "Divers / Autres",
+            "En développement"
+        ],
+        "cmds": [
+            "event",
+            "help",
+            "test-channels",
+            "mute"
+        ]
+    }
+}
