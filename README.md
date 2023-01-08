@@ -1,4 +1,4 @@
-# Game Bot
+# Para
 This **JavaScript** project was never finished. It was made the 4th of May 2022
 
 This bot is a protection/moderation bot which was more intelligent than those "RaidProtect" bots *winky face you get it?*  
