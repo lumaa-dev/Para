@@ -1,10 +1,12 @@
-const { EmbedBuilder, ApplicationCommandType, ApplicationCommandOptionType, PermissionFlagsBits, ChatInputCommandInteraction } = require("discord.js");
+const { EmbedBuilder, ApplicationCommandType, ApplicationCommandOptionType, PermissionFlagsBits, ChatInputCommandInteraction, ChannelType, ApplicationCommand } = require("discord.js");
 
 module.exports = {
+    /**@type {ApplicationCommand} */
 	data: {
 		name: "mute",
 		description: "Rendez quelqu'un muet",
 		type: ApplicationCommandType.ChatInput,
+		defaultMemberPermissions: [PermissionFlagsBits.MuteMembers, PermissionFlagsBits.ModerateMembers],
 		options: [
 			{
 				name: "membre",
@@ -42,7 +44,7 @@ module.exports = {
 	/**
 	 * @param {ChatInputCommandInteraction} interaction
 	 */
-	async execute(interaction, client = null) {
+	async execute(interaction) {
 		if (interaction.memberPermissions.has([PermissionFlagsBits.MuteMembers])) {
 			const member = interaction.options.getMember("membre");
 			const reason = interaction.options.getString("raison") ?? "*Aucune raison donnée*";
@@ -72,10 +74,10 @@ module.exports = {
 			}
 			interaction.guild.channels.cache.forEach(async (_channel) => {
 				if (
-					_channel.type == "GUILD_TEXT" ||
-					_channel.type == "GUILD_NEWS" ||
-					_channel.type == "GUILD_STORE" ||
-					_channel.type == "GUILD_CATEGORY"
+					_channel.type == ChannelType.GuildText ||
+					_channel.type == ChannelType.GuildAnnouncement ||
+					_channel.type == ChannelType.GuildForum ||
+					_channel.type == ChannelType.GuildCategory
 				) {
 					
 					await _channel.permissionOverwrites.create(
@@ -83,14 +85,16 @@ module.exports = {
 						{
 							SendMessages: false,
 							AddReactions: false,
+							CreatePublicThreads: false,
+							CreatePrivateThreads: false,
 							UsePublicTheads: false,
 							UsePrivateThreads: false,
 						},
 						{ type: 0 }
 					);
 				} else if (
-					_channel.type == "GUILD_VOICE" ||
-					_channel.type == "GUILD_STAGE_VOICE"
+					_channel.type == ChannelType.GuildVoice ||
+					_channel.type == ChannelType.GuildStageVoice
 				) {
 					await _channel.permissionOverwrites.create(
 						muteRole,
@@ -116,11 +120,11 @@ module.exports = {
 				.setFooter({
 					text: `Rôle créé : ${createdRole ? `Oui, (${muteRole.id})` : `Non`}`,
 				})
-				.addField("Membre muet :", `<@${member.user.id}>`, true)
-				.addField("Rendu muet par :", `<@${interaction.member.user.id}>`, true)
-				.addField("Rôle ajouté :", `<@&${muteRole.id}>`, true)
-				.addField("Raison :", reason.trim())
-				.setColor("RED");
+				.addFields({ name: "Membre muet :", value: `<@${member.user.id}>`, inline: true })
+				.addField({ name: "Rendu muet par :", value: `<@${interaction.member.user.id}>`, inline: true })
+				.addField({ name: "Rôle ajouté :", value: `<@&${muteRole.id}>`, inline: true })
+				.addField({ name: "Raison :", value: reason.trim() })
+				.setColor();
 
 			interaction.reply({ embeds: [muteEmbed] });
 		} else {

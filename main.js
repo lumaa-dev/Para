@@ -2,26 +2,25 @@ const Discord = require("discord.js");
 const config = require("./functions/config.json");
 const Func = require("./functions/all");
 const { createClient } = require("./functions/js/client");
-const { InteractionType } = require("discord.js");
+const { ChannelType, IntentsBitField } = require("discord.js");
 
 const client = createClient([
-	Discord.IntentsBitField.Flags.Guilds,
-	Discord.IntentsBitField.Flags.GuildBans,
-	Discord.IntentsBitField.Flags.GuildInvites,
-	Discord.IntentsBitField.Flags.GuildMembers,
+	IntentsBitField.Flags.Guilds,
+	IntentsBitField.Flags.GuildBans,
+	IntentsBitField.Flags.GuildInvites,
+	IntentsBitField.Flags.GuildMembers,
 
 ]);
 
 client.once("ready", () => {
 	console.log(`${client.user.tag} is logged`);
-	//Func.Client.setStatus(client, "avec ses pouces");
 });
 
-client.on("messageCreate", async (message) => {
+client.on(Discord.Events.ClientReady, async (message) => {
 	Func.Commands.initiate(client, message);
 });
 
-client.on("interactionCreate", async (/**@type {Discord.Interaction}*/interaction) => {
+client.on(Discord.Events.InteractionCreate, async (/**@type {Discord.Interaction}*/interaction) => {
 	if (interaction.isChatInputCommand()) {
 		let { commandName: name } = interaction;
 
@@ -37,7 +36,7 @@ client.on("interactionCreate", async (/**@type {Discord.Interaction}*/interactio
 			}
 			
 		}
-	} else if (interaction.type == InteractionType.ApplicationCommandAutocomplete) {
+	} else if (interaction.isAutocomplete()) {
 		let { commandName: name } = interaction;
 
 		try {
@@ -48,13 +47,8 @@ client.on("interactionCreate", async (/**@type {Discord.Interaction}*/interactio
 	}
 });
 
-client.on("rateLimit", (detail) => {
-	console.log(detail);
-});
-
-client.on("guildMemberAdd", async (member) => {
+client.on(Discord.Events.GuildMemberAdd, async (member) => {
 	if (!member.guild?.security) {
-		member.guild.security = new Discord.Collection();
 		member.guild.security = {
 			count: 1,
 			reset: function () {
@@ -88,6 +82,7 @@ client.on("guildMemberAdd", async (member) => {
 		};
 	}
 
+	/**@type {{ count: Number, timeout: NodeJS.Timeout | undefined, acted: Boolean, reset: () => void, joinedUsers: String }} */
 	const ms = member.guild.security;
 	console.log(`warn in ${config.para.detectSecuritySec - ms.count}`);
 
@@ -106,7 +101,7 @@ client.on("guildMemberAdd", async (member) => {
 				new Discord.EmbedBuilder()
 					.setTitle("Mesure de sécurité")
 					.setDescription(
-						"Nous avons dû supprimer la majoritée des invitations. La raison est : **Raid potentiel (10 nouveaux membres en 10 secondes).**\nSi vous pensez que cette action est une erreur, nous nous excusons."
+						"Nous avons dû supprimer la majoritée des invitations. La raison est : **Raid potentiel (10 nouveaux membres en 10 secondes).**\nSi vous pensez que cette action est une erreur, nous nous excusons et essayerons de nous améliorer."
 					)
 					.setColor("RED")
 					.setFooter({ text: "ParaRaid 💪" }),
@@ -121,11 +116,10 @@ client.on("guildMemberAdd", async (member) => {
 	}
 });
 
-client.on("channelDelete", async (/**@type {Discord.TextChannel} */ channel) => {
+client.on(Discord.Events.ChannelDelete, async (/**@type {Discord.GuildChannel} */ channel) => {
 	const botRole = channel.guild.members.cache.get(client.user.id).roles.botRole;
 
-	if (!channel.guild?.security) {
-		channel.guild.security = new Discord.Collection();
+	if (!channel.guild?.security) {;
 		channel.guild.security = {
 			count: 1,
 			reset: function () {
@@ -155,6 +149,7 @@ client.on("channelDelete", async (/**@type {Discord.TextChannel} */ channel) => 
 		};
 	}
 
+	/**@type {{ count: Number, timeout: NodeJS.Timeout | undefined, acted: Boolean, reset: () => void }} */
 	const cs = channel.guild.security;
 	console.log(`warn in ${config.para.detectSecuritySec - cs.count}`);
 
@@ -167,11 +162,11 @@ client.on("channelDelete", async (/**@type {Discord.TextChannel} */ channel) => 
 				new Discord.EmbedBuilder()
 					.setTitle("Mesure de sécurité")
 					.setDescription(
-						"Nous avons dû bloqué les permissions des rôles que j'ai pu modifié. La raison est : **Supprimé plus de 10 salons en 10 secondes.**\nSi vous pensez que cette action est une erreur, nous nous excusons."
+						"Nous avons dû bloqué les permissions des rôles que j'ai pu modifié. La raison est : **Supprimé plus de 10 salons en 10 secondes.**\nSi vous pensez que cette action est une erreur, nous nous excusons et essayerons de nous améliorer."
 					)
 					.setColor("RED")
 					.setFooter({ text: "ParaHack 💪" }),
-			],
+			]
 		});
 	} else if (typeof cs.timeout == "undefined") {
 		console.log(`timed out in ${config.para.detectSecuritySec} seconds`);
@@ -201,12 +196,12 @@ async function roleSecurity(role, botRole) {
 /**
  * It sends a message to the first channel it finds that has the VIEW_CHANNEL permission denied for the @everyone role.
  * @param {Discord.Guild} guild - The guild object
- * @param {Object|String} message - The message object.
+ * @param {String|Discord.MessagePayload|Discord.MessageCreateOptions} message - The message object.
  */
 function sendPrivate(guild, message) {
 	var done = false;
 	guild.channels.cache.each(async (channel) => {
-		if (done === true || channel.type !== "GUILD_TEXT") return;
+		if (done === true || channel.type !== ChannelType.GuildText) return;
 		if (channel.permissionOverwrites.cache.first()?.id === guild.id) {
 			const denyPermissions = channel.permissionOverwrites.cache.first().deny;
 			if (denyPermissions.bitfield == 1024n) {
@@ -218,7 +213,7 @@ function sendPrivate(guild, message) {
 
 	if (done !== true) {
 		guild.channels.cache.each(async (channel) => {
-			if (done === true || channel.type !== "GUILD_TEXT") return;
+			if (done === true || channel.type !== ChannelType.GuildText) return;
 			channel.send(message);
 			done = true;
 		});

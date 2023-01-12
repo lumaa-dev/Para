@@ -1,38 +1,28 @@
-const { MessageEmbed, EmbedBuilder, AutocompleteInteraction } = require("discord.js");
+const { EmbedBuilder, AutocompleteInteraction, ApplicationCommand, ApplicationCommandOptionType, PermissionFlagsBits } = require("discord.js");
 const { awaitMessage } = require("../functions/js/cmds");
 const { correctEpoch } = require("../functions/js/other");
 
 module.exports = {
+	/**@type {ApplicationCommand} */
 	data: {
 		name: "event",
 		description: "Annoncez un évènement",
+		defaultMemberPermissions: [PermissionFlagsBits.ManageEvents],
 		options: [
 			{
 				name: "nom",
 				description: "Nom de l'évènement",
 				required: true,
-				type: "STRING",
+				type: ApplicationCommandOptionType.String,
 				autocomplete: true,
 			},
-			// {
-			// 	name: "date",
-			// 	description: "Le format est : JJ/MM",
-			// 	required: true,
-			// 	type: "STRING",
-			// 	//autocomplete: true,
-			// },
-			// {
-			// 	name: "heure",
-			// 	description: "Le format est : HH/MM",
-			// 	required: true,
-			// 	type: "STRING",
-			// 	//autocomplete: true,
-			// },
 			{
 				name: "limite",
 				description: "Limite de membre qui peuvent rejoindre",
 				required: false,
-				type: "INTEGER",
+				type: ApplicationCommandOptionType.Integer,
+				minValue: 2,
+				maxValue: 100
 			},
 		],
 	},
@@ -103,43 +93,13 @@ module.exports = {
 	async completeAuto(/**@type {AutocompleteInteraction}*/interaction) {
 		const input = interaction.options.getFocused();
 
+		/**@type {import("discord.js").ApplicationCommandOptionChoiceData[]} */
 		let choices = [];
 		await interaction.guild.scheduledEvents.cache.each((event) =>
-			choices.push({ name: event.name, value: event.name.trim().replace(/ +/g, "_") })
+			choices.push({ name: event.name, value: event.name.toLowerCase().trim().replace(/ +/g, "_") })
 		);
 
 		const filtered = choices.filter((choice) => choice.name.startsWith(input));
 		await interaction.respond(filtered);
-	},
-	// async completeAuto(interaction) {
-	// 	const input = interaction.options.getFocused(true);
-
-	// 	let choices = [];
-
-	// 	if (input.name === "heure") {
-	// 		for (let h = 0; h < 23; h++) {
-	// 			for (let m = 0; m < 59; m++) {
-	// 				if (h.length == 1) h = `0${h}`;
-	// 				if (m.length == 1) m = `0${m}`;
-	// 				choices.push(`${h}:${m}`);
-	// 			}
-	// 		}
-	// 	}
-
-	// 	if (input.name === "date") {
-	// 		for (let d = 0; d < 31; d++) {
-	// 			for (let m = 0; +m < 12; m++) {
-	// 				if (d.length == 1) d = `0${d}`;
-	// 				if (m.length == 1) m = `0${m}`;
-	// 				choices.push(`${d}/${m}`);
-	// 			}
-	// 		}
-	// 	}
-
-	// 	const filtered = choices.filter((choice) => choice.startsWith(input.value));
-
-	// 	await interaction.respond(
-	// 		filtered.map((choice) => ({ name: choice, value: choice }))
-	// 	);
-	// },
+	}
 };
