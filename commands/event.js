@@ -1,4 +1,4 @@
-const { EmbedBuilder, AutocompleteInteraction, ApplicationCommand, ApplicationCommandOptionType, PermissionFlagsBits } = require("discord.js");
+const { EmbedBuilder, AutocompleteInteraction, ApplicationCommand, ApplicationCommandOptionType, PermissionFlagsBits, ChatInputCommandInteraction, Message } = require("discord.js");
 const { awaitMessage } = require("../functions/js/cmds");
 const { correctEpoch } = require("../functions/js/other");
 
@@ -30,11 +30,16 @@ module.exports = {
 		category: "ints",
 		dev: false,
 		help: {
-			usage: "/event [nom] [JJ/MM] [HH/MM] [limite]",
+			usage: "/event [nom] [limite]",
 		},
 	},
+	/**
+	 * 
+	 * @param {ChatInputCommandInteraction} interaction 
+	 * @returns 
+	 */
 	async execute(interaction) {
-		const name = interaction.options.getString("nom");
+		const id = interaction.options.getString("nom");
 		const maxUsers = interaction.options.getInteger("limite");
 		let description;
 
@@ -42,40 +47,31 @@ module.exports = {
 			content: "Envoyez une courte description de votre évènement.",
 		});
 
-		await awaitMessage(interaction.channel, interaction.user, (collected) => {
+		await awaitMessage(interaction.channel, interaction.user, async (collected) => {
+			/**@type {Message}*/
 			const message = collected.first();
 
 			if (message.content.length > 4095)
 				return message.reply({
-					content: "WOW T'AS VRAIMENT UTILISÉ 4096+ CHARACTÈRE !",
+					content: "WOW T'AS VRAIMENT UTILISÉ 4096+ CHARACTÈRE.",
 				});
 
 			description = message.content;
+			await message.delete()
 		});
 
 		if (typeof description !== "string") return;
 
-		var jj = oneLength(date.split(/\//g)[0]);
-		var mm = oneLength(date.split(/\//g)[1]);
-		//const yyyy = date.split(/\//g)[2];
-
-		var hh = oneLength(time.split(/\:/g)[0]);
-		var min = oneLength(time.split(/\:/g)[1]);
-
-		const timestamp = new Date();
-
-		timestamp.setDate(Number(jj));
-		timestamp.setMonth(Number(mm) - 1);
-		timestamp.setHours(Number(hh), Number(min), 0);
+		const event = interaction.guild.scheduledEvents.cache.get(id);
 
 		const eventEmbed = new EmbedBuilder()
-			.setTitle(`Nouvel évènement ! - ${name}`)
+			.setTitle(`Nouvel évènement ! - ${event.name}`)
 			.setDescription(
 				`Description :\n> ${description
 					.split("\n")
 					.join("\n> ")}\n\n- Limite de membres : 0/${
-					maxUsers ?? 20
-				}\n- <t:${correctEpoch(timestamp.getTime())}:R>`
+					maxUsers ?? 0
+				}\n- <t:${correctEpoch(event.scheduledStartTimestamp)}:R>`
 			);
 
 		function oneLength(variable) {
@@ -95,8 +91,8 @@ module.exports = {
 
 		/**@type {import("discord.js").ApplicationCommandOptionChoiceData[]} */
 		let choices = [];
-		await interaction.guild.scheduledEvents.cache.each((event) =>
-			choices.push({ name: event.name, value: event.name.toLowerCase().trim().replace(/ +/g, "_") })
+		interaction.guild.scheduledEvents.cache.each((event) =>
+			choices.push({ name: event.name, value: event.id })
 		);
 
 		const filtered = choices.filter((choice) => choice.name.startsWith(input));

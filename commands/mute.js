@@ -1,4 +1,5 @@
 const { EmbedBuilder, ApplicationCommandType, ApplicationCommandOptionType, PermissionFlagsBits, ChatInputCommandInteraction, ChannelType, ApplicationCommand } = require("discord.js");
+const { emojis } = require("../functions/config.json")
 
 module.exports = {
     /**@type {ApplicationCommand} */
@@ -54,7 +55,7 @@ module.exports = {
 					ephemeral: true,
 					embeds: [
 						EmbedDescription(
-							`<:cross:973972321280860210> Vous n'avez pas les permissions requise.`
+							`${emojis.cross} Vous n'avez pas les permissions requise.`
 						),
 					],
 				});
@@ -65,7 +66,7 @@ module.exports = {
 			if (!muteRole || typeof muteRole === "undefined") {
 				muteRole = await interaction.guild.roles.create({
 					name: "Mute",
-					color: "RED",
+					color: "Red",
 					hoist: true,
 					mentionable: false,
 					permissions: [PermissionFlagsBits.CreateInstantInvite, PermissionFlagsBits.Connect],
@@ -87,8 +88,6 @@ module.exports = {
 							AddReactions: false,
 							CreatePublicThreads: false,
 							CreatePrivateThreads: false,
-							UsePublicTheads: false,
-							UsePrivateThreads: false,
 						},
 						{ type: 0 }
 					);
@@ -108,23 +107,23 @@ module.exports = {
 					ephemeral: true,
 					embeds: [
 						EmbedDescription(
-							`<:cross:973972321280860210> <@${member.user.id}> est déjà muet.`
+							`${emojis.cross} <@${member.user.id}> est déjà muet.`
 						),
 					],
 				});
 			member.roles.add(muteRole);
 			const muteEmbed = new EmbedBuilder()
 				.setTitle(
-					`<:check:973972321436065802> ${member.user.username} à été mis en sourdine`
+					`${emojis.check} ${member.user.username} à été mis en sourdine`
 				)
 				.setFooter({
 					text: `Rôle créé : ${createdRole ? `Oui, (${muteRole.id})` : `Non`}`,
 				})
-				.addFields({ name: "Membre muet :", value: `<@${member.user.id}>`, inline: true })
-				.addField({ name: "Rendu muet par :", value: `<@${interaction.member.user.id}>`, inline: true })
-				.addField({ name: "Rôle ajouté :", value: `<@&${muteRole.id}>`, inline: true })
-				.addField({ name: "Raison :", value: reason.trim() })
-				.setColor();
+				.addFields({ name: "Membre muet :", value: `<@${member.user.id}>`, inline: true },
+				{ name: "Rendu muet par :", value: `<@${interaction.member.user.id}>`, inline: true },
+				{ name: "Rôle ajouté :", value: `<@&${muteRole.id}>`, inline: true },
+				{ name: "Raison :", value: reason.trim() })
+				.setColor("Red");
 
 			interaction.reply({ embeds: [muteEmbed] });
 		} else {
@@ -132,7 +131,7 @@ module.exports = {
 				ephemeral: true,
 				embeds: [
 					EmbedDescription(
-						`<:cross:973972321280860210> Vous n'avez pas les permissions requise.`
+						`${emojis.cross} Vous n'avez pas les permissions requise.`
 					),
 				],
 			});
@@ -147,7 +146,7 @@ module.exports = {
 				new EmbedBuilder()
 					//.setTitle("Mute")
 					.setDescription(description)
-					.setColor("RED")
+					.setColor("Red")
 			);
 		}
 	},

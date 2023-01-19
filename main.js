@@ -9,14 +9,15 @@ const client = createClient([
 	IntentsBitField.Flags.GuildBans,
 	IntentsBitField.Flags.GuildInvites,
 	IntentsBitField.Flags.GuildMembers,
-
+	IntentsBitField.Flags.GuildMessages,
+	IntentsBitField.Flags.MessageContent,
 ]);
 
-client.once("ready", () => {
+client.once(Discord.Events.ClientReady, () => {
 	console.log(`${client.user.tag} is logged`);
 });
 
-client.on(Discord.Events.ClientReady, async (message) => {
+client.on(Discord.Events.MessageCreate, async (message) => {
 	Func.Commands.initiate(client, message);
 });
 
@@ -103,7 +104,7 @@ client.on(Discord.Events.GuildMemberAdd, async (member) => {
 					.setDescription(
 						"Nous avons dû supprimer la majoritée des invitations. La raison est : **Raid potentiel (10 nouveaux membres en 10 secondes).**\nSi vous pensez que cette action est une erreur, nous nous excusons et essayerons de nous améliorer."
 					)
-					.setColor("RED")
+					.setColor("Red")
 					.setFooter({ text: "ParaRaid 💪" }),
 			],
 		});
@@ -164,7 +165,7 @@ client.on(Discord.Events.ChannelDelete, async (/**@type {Discord.GuildChannel} *
 					.setDescription(
 						"Nous avons dû bloqué les permissions des rôles que j'ai pu modifié. La raison est : **Supprimé plus de 10 salons en 10 secondes.**\nSi vous pensez que cette action est une erreur, nous nous excusons et essayerons de nous améliorer."
 					)
-					.setColor("RED")
+					.setColor("Red")
 					.setFooter({ text: "ParaHack 💪" }),
 			]
 		});
