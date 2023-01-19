@@ -16,7 +16,7 @@
             "Modération",
             "Interactions",
             "Divers / Autres",
-            "En développement"
+            "Développeur"
         ],
         "cmds": [
             "event",
@@ -24,5 +24,11 @@
             "test-channels",
             "mute"
         ]
+    },
+    "emojis": {
+        "cross": "<:lg_cross:902288945239441479>",
+        "check": "<:lg_check:902290122739970058>",
+        "warn": "<:lg_warn:902289016634900500>",
+        "info": "<:lg_information:902941757606604851>"
     }
 }
