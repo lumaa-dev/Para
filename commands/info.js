@@ -1,4 +1,4 @@
-const { ApplicationCommand, ChatInputCommandInteraction, EmbedBuilder, ActionRowBuilder } = require("discord.js")
+const { ApplicationCommand, ChatInputCommandInteraction, EmbedBuilder } = require("discord.js")
 
 module.exports = {
     /**@type {ApplicationCommand} */
@@ -27,8 +27,8 @@ module.exports = {
             .setDescription("Para utilise plusieurs évènements simultanément pour pouvoir empêcher un raid ou un grief, les informations prises en général sont :\n- Le premier salon textuel privé du serveur pour contacter les modérateurs\n\nLes informations prises pour un anti-raid sont :\n- Le nombre de nouveaux arrivants toutes les 10 secondes\n- Le nom d'utilisateur et l'identifiant des nouveaux arrivants\n- Les invitations\n\nLes informations prises pour un anti-grief sont :\n- Les rôles modifiable par Para\n- Les salons supprimés toutes les 10 secondes\n\nToutes les informations que nous utilisons pour vous protéger sont **directement supprimés** même si il ne se passe rien d'alarmant ou si une action à dû être faite."),
             new EmbedBuilder()
             .setTitle("Open-Source")
-            .setDescription("Le programme de Para est disponible à tous depuis le mois de janvier sur GitHub :\nhttps://github.com/u-lumaa/Para")
-            .setURL("https://github.com/u-lumaa/Para")
+            .setDescription("Le programme de Para est disponible à tous depuis le mois de janvier sur GitHub :\nhttps://github.com/lumaa-dev/Para")
+            .setURL("https://github.com/lumaa-dev/Para")
         ]
 
         for (let i = 0; i < pages.length; i++) {
