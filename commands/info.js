@@ -18,6 +18,7 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction 
      */
     execute(interaction) {
+        /**@type {EmbedBuilder[]} */
         const pages = [
             new EmbedBuilder()
             .setTitle("Général")
@@ -37,7 +38,7 @@ module.exports = {
             .setFooter({ text: `${i + 1}/${pages.length} - Par Lumaa#4480` })
             .setColor("Random")
         }
-
+        
         interaction.reply({ embeds: pages })
     }
 }
