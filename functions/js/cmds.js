@@ -151,12 +151,15 @@ module.exports = {
 			message.content === `${config.devPrefix}gdeploy`
 		) {
 			var a = [];
+			const fileSep = __dirname.includes("/") ? "/" : "\\";
+			const filePath = __dirname.split(/\/|\\/g).slice(0, -2).join(fileSep);
 			const files = await fs.readdirSync(filePath + "/commands");
 			const cmds = onlyJs(files);
 
 			cmds.forEach((cmd) => {
-				if (a.description === "Dev") return;
-				a.push(require("../../commands/" + cmd.replace(".js", "")).data);
+				let cmd = require("../../commands/" + cmd.replace(".js", ""))
+				if (cmd.customData.dev) return;
+				a.push(cmd.data);
 			});
 
 			await client.application?.commands.set(a);
