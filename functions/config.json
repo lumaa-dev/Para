@@ -1,6 +1,7 @@
 {
     "ownerId": "474231265059405845",
     "log": false,
+    "test": true,
     "devPrefix": "p!",
     "para": {
         "detectSecuritySec": 10,

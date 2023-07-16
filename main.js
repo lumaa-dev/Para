@@ -178,6 +178,39 @@ client.on(Discord.Events.ChannelDelete, async (/**@type {Discord.GuildChannel} *
 	}
 });
 
+client.on(Discord.Events.ChannelCreate, (/**@type {Discord.GuildChannel}*/ channel) => {
+	muteRole = channel.guild.roles.cache.find(
+		(role) => role.name == "Mute"
+	);
+	if (muteRole || typeof muteRole !== "undefined") {
+		if (channel.isTextBased() || channel.isThread()) {
+			channel.permissionOverwrites.create(muteRole, {
+				SendMessages: false,
+				SendMessagesInThreads: false,
+				AddReactions: false,
+				CreatePrivateThreads: false,
+				CreatePublicThreads: false,
+				EmbedLinks: false,
+				UseApplicationCommands: false,
+			})
+		}
+		if (channel.isVoiceBased()) {
+			channel.permissionOverwrites.create(muteRole, {
+				Speak: false,
+				PrioritySpeaker: false,
+				Stream: false,
+				RequestToSpeak: false,
+				SendMessages: false,
+				AddReactions: false,
+				EmbedLinks: false,
+				UseApplicationCommands: false,
+				UseEmbeddedActivities: false,
+			}, { type: 0 })
+		}
+	}
+	
+})
+
 /**
  * It checks if the role is above the bot's role, and if it is, it sets the role's permissions to
  * nothing.
@@ -221,4 +254,4 @@ function sendPrivate(guild, message) {
 	}
 }
 
-client.login(require("./functions/token.json").token);
+client.login(!config.test ? require("./functions/token.json").token : require("./functions/token.json").test);
