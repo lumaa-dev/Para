@@ -20,18 +20,6 @@ module.exports = {
 				description: "La raison de cette action",
 				type: ApplicationCommandOptionType.String,
 				required: false,
-			},
-			{
-				name: "heures",
-				description: "Temps en heure du bannissement textuel",
-				type: ApplicationCommandOptionType.Integer,
-				required: false,
-			},
-			{
-				name: "minutes",
-				description: "Temps en minutes du bannissement textuel",
-				type: ApplicationCommandOptionType.Integer,
-				required: false,
 			}
 		],
 	},
@@ -85,9 +73,12 @@ module.exports = {
 						muteRole,
 						{
 							SendMessages: false,
+							SendMessagesInThreads: false,
 							AddReactions: false,
-							CreatePublicThreads: false,
 							CreatePrivateThreads: false,
+							CreatePublicThreads: false,
+							EmbedLinks: false,
+							UseApplicationCommands: false,
 						},
 						{ type: 0 }
 					);
@@ -97,7 +88,17 @@ module.exports = {
 				) {
 					await _channel.permissionOverwrites.create(
 						muteRole,
-						{ Speak: false, Stream: false, RequestToSpeak: false },
+						{ 
+							Speak: false,
+							PrioritySpeaker: false,
+							Stream: false,
+							RequestToSpeak: false,
+							SendMessages: false,
+							AddReactions: false,
+							EmbedLinks: false,
+							UseApplicationCommands: false,
+							UseEmbeddedActivities: false,
+						},
 						{ type: 0 }
 					);
 				}
