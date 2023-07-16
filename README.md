@@ -1,7 +1,7 @@
 # Para
 This **JavaScript** project is currently being rebooted at its speed. It was originally made the 4th of May 2022
 
-This bot is a protection/moderation bot which was more intelligent than those "RaidProtect" bots *winky face you get it?*  
+This bot is a protection/moderation bot which was more intelligent than those "ζ͜͡RaidProtect" bots *winky face you get it?*  
 **THERE WON'T BE AN ENGLISH TRANSLATION FROM MY END YET.**
 
 ## License

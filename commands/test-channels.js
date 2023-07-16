@@ -35,7 +35,7 @@ module.exports = {
 		await interaction.deferReply();
 		for (let i = 0; i < x; i++) {
 			let c = await interaction.guild.channels.create({
-				reason: "Test Défence",
+				reason: "Test Défense",
 				name: `${i + 1}`
 			});
 			channels.push(c)

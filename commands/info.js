@@ -1,4 +1,4 @@
-const { ApplicationCommand, ChatInputCommandInteraction, EmbedBuilder, ActionRowBuilder } = require("discord.js")
+const { ApplicationCommand, ChatInputCommandInteraction, EmbedBuilder } = require("discord.js")
 
 module.exports = {
     /**@type {ApplicationCommand} */
@@ -18,6 +18,7 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction 
      */
     execute(interaction) {
+        /**@type {EmbedBuilder[]} */
         const pages = [
             new EmbedBuilder()
             .setTitle("Général")
@@ -37,7 +38,7 @@ module.exports = {
             .setFooter({ text: `${i + 1}/${pages.length} - Par @lumaa_dev` })
             .setColor("Random")
         }
-
+        
         interaction.reply({ embeds: pages })
     }
 }
