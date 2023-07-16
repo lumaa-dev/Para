@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const config = require("./functions/config.json");
 const Func = require("./functions/all");
 const { createClient } = require("./functions/js/client");
-const { ChannelType, IntentsBitField } = require("discord.js");
+const { ChannelType, IntentsBitField, PermissionFlagsBits } = require("discord.js");
 
 const client = createClient([
 	IntentsBitField.Flags.Guilds,
