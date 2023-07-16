@@ -23,7 +23,8 @@
             "event",
             "help",
             "test-channels",
-            "mute"
+            "mute",
+            "clear"
         ]
     },
     "emojis": {
