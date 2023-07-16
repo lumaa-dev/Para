@@ -157,9 +157,9 @@ module.exports = {
 			const cmds = onlyJs(files);
 
 			cmds.forEach((cmd) => {
-				let cmd = require("../../commands/" + cmd.replace(".js", ""))
-				if (cmd.customData.dev) return;
-				a.push(cmd.data);
+				let _cmd = require("../../commands/" + cmd.replace(".js", ""))
+				if (_cmd.customData.dev) return;
+				a.push(_cmd.data);
 			});
 
 			await client.application?.commands.set(a);
