@@ -151,7 +151,7 @@ module.exports = {
 			message.content === `${config.devPrefix}gdeploy`
 		) {
 			var a = [];
-			const files = await fs.readdirSync(fixDirName() + "/commands");
+			const files = await fs.readdirSync(filePath + "/commands");
 			const cmds = onlyJs(files);
 
 			cmds.forEach((cmd) => {
