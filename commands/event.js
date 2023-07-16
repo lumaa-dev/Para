@@ -22,15 +22,15 @@ module.exports = {
 				required: false,
 				type: ApplicationCommandOptionType.Integer,
 				minValue: 2,
-				maxValue: 100
+				maxValue: 99
 			},
 		],
 	},
 	customData: {
 		category: "ints",
-		dev: false,
+		dev: true,
 		help: {
-			usage: "/event [nom] [limite]",
+			usage: "/event [nom]",
 		},
 	},
 	/**
@@ -65,7 +65,7 @@ module.exports = {
 		const event = interaction.guild.scheduledEvents.cache.get(id);
 
 		const eventEmbed = new EmbedBuilder()
-			.setTitle(`Nouvel évènement ! - ${event.name}`)
+			.setTitle(`${event.name}`)
 			.setDescription(
 				`Description :\n> ${description
 					.split("\n")
